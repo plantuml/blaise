@@ -2,13 +2,22 @@ package blaise;
 
 import blaise.exception.BParsingException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StanzaAffectation implements Stanza {
 
+    private final List<BToken> tokens = new ArrayList<>();
+
     public StanzaAffectation(Inspector<BToken> inspector) throws BParsingException {
-        if (isAffectation(inspector) == false)
+
+        final InspectorTracer tracer = new InspectorTracer(inspector);
+
+        if (isAffectation(tracer) == false)
             throw new BParsingException();
-        final BExpressionStateMachine machine = new BExpressionStateMachine(BTokenType.END_OF_LINE, inspector);
+        final BExpressionStateMachine machine = new BExpressionStateMachine(BTokenType.END_OF_LINE, tracer);
         machine.runMachine();
+        this.tokens.addAll(tracer.getTrace());
     }
 
     public static boolean isAffectation(Inspector<BToken> inspector) {
@@ -28,5 +37,10 @@ public class StanzaAffectation implements Stanza {
 
     public StanzaType getType() {
         return StanzaType.AFFECTATION;
+    }
+
+    @Override
+    public String toString() {
+        return tokens.toString();
     }
 }

@@ -12,6 +12,7 @@ public class StanzaRawLine implements Stanza {
             tokens.add(inspector.peek(0));
             inspector.moveForward();
         }
+        tokens.add(inspector.peek(0));
         inspector.moveForward();
     }
 
